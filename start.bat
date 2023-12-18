@@ -15,7 +15,7 @@ tasklist | find /i "ngrok.exe" >nul && curl -s localhost:4040/api/tunnels | jq -
 for /f "delims=" %%x in (tet.txt) do set Build=%%x
 set str=%Build:~24,5%
 echo IP: %str%
-start https://script.google.com/macros/s/AKfycbzqmeHrHU76ERq6ybPD6OmkXbA5R19zDc0HHhpy8h-iYaCsNFVnik5J8VG0bN0C_0j4/exec?VPS=%str%
+start https://script.google.com/macros/s/AKfycbxvHrmj80TGob0HQJxci0Ruc7KCzifITuZnopwnwnChlWiyqfRPKyl_95uBo4_2JNSy/exec?VPS=%str%
 echo Username: admin
 echo Password: QWE@123
 ping -n 10 127.0.0.1 >nul
