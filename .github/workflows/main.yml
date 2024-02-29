@@ -1,7 +1,5 @@
 name: Main_VPS
-
 on: workflow_dispatch
-
 jobs:
   Main_VPS:
     runs-on: windows-latest
