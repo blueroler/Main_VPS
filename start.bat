@@ -13,12 +13,13 @@ sc start audiosrv >nul
 ICACLS C:\Windows\Temp /grant admin:F >nul
 ICACLS C:\Windows\installer /grant admin:F >nul
 
-timeout /t 15 /nobreak >nul
+:: Thay the timeout bang ping de tao tre 15 giay
+ping -n 15 127.0.0.1 >nul
 
 :check
 tasklist | find /i "ngrok.exe" >nul
 if errorlevel 1 (
-    timeout /t 5 >nul
+    ping -n 5 127.0.0.1 >nul
     goto check
 )
 
