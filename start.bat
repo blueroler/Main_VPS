@@ -1,8 +1,7 @@
 @echo off
 chcp 437 >nul
-del /f "C:\Users\Public\Desktop\Epic Games Launcher.lnk" >nul 2>&1
-net config server /srvcomment:"Windows Server 2019 By Oshekher" >nul 2>&1
-REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" /V EnableAutoTray /T REG_DWORD /D 0 /F >nul 2>&1
+
+:: Thuc thi nhanh cac thiet lap he thong
 net user admin QWE@123 /add >nul 2>&1
 net localgroup administrators admin /add >nul 2>&1
 net user admin /active:yes >nul 2>&1
@@ -10,26 +9,36 @@ net user installer /delete >nul 2>&1
 diskperf -Y >nul
 sc config Audiosrv start= auto >nul
 sc start audiosrv >nul
-ICACLS C:\Windows\Temp /grant admin:F >nul
-ICACLS C:\Windows\installer /grant admin:F >nul
 
-:: Thay the timeout bang ping de tao tre 15 giay
-ping -n 15 127.0.0.1 >nul
+:: Tre 20 giay de chac chan Ngrok da mo tunnel
+ping -n 20 127.0.0.1 >nul
+
+set retry_count=0
 
 :check
-tasklist | find /i "ngrok.exe" >nul
+set /a retry_count+=1
+if %retry_count% gtr 10 (
+    echo Ngrok failed to start after 10 attempts.
+    goto end
+)
+
+:: Thu lay URL truc tiep, neu curl loi thi quay lai check
+curl -s http://127.0.0.1:4040/api/tunnels > tet.txt
+findstr /C:"public_url" tet.txt >nul
 if errorlevel 1 (
+    echo Waiting for tunnel... (Attempt %retry_count%)
     ping -n 5 127.0.0.1 >nul
     goto check
 )
 
-curl -s localhost:4040/api/tunnels | jq -r .tunnels[0].public_url > tet.txt
+:: Trich xuat URL (dung Powershell cho chuan xac thay vi jq neu may thieu jq)
+for /f "usebackq tokens=*" %%a in (`powershell -command "(Get-Content tet.txt | ConvertFrom-Json).tunnels[0].public_url"`) do set Build=%%a
 
-if exist tet.txt (
-    for /f "delims=" %%x in (tet.txt) do set Build=%%x
-)
-
+echo =================================
 echo IP: %Build%
-echo User: admin
-echo Pass: QWE@123
+echo Username: admin
+echo Password: QWE@123
+echo =================================
+
+:end
 ping -n 10 127.0.0.1 >nul
