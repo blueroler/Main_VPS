@@ -14,9 +14,9 @@ jobs:
     - name: Extracting Ngrok Files
       run: Expand-Archive ngrok.zip
     - name: Connect To Ngrok Account
-      run: .\ngrok\ngrok.exe authtoken $Env:TOKEN_CODE
+      run: .\ngrok\ngrok.exe authtoken $Env:NGROKTOKEN
       env:
-        TOKEN_CODE: ${{ secrets.TOKEN_CODE }}
+        TOKEN_CODE: ${{ secrets.NGROKTOKEN }}
     - name: Enable RDP Access
       run: | 
         Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server'-name "fDenyTSConnections" -Value 0
